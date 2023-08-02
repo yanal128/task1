@@ -8,9 +8,10 @@ final productProvider = ChangeNotifierProvider<ProductProvider>((ref) => Product
 class ProductProvider extends ChangeNotifier {
   Api _api=Api();
   List<Products> products=[];
+  List<Products> productDetailes=[];
 
-  Future getProducts() async{
-    var data =await _api.getDataPagination();
+  Future getProducts(int offset,int limit  ) async{
+    var data =await _api.getDataPagination( offset, limit );
     List productData=data['products'];
 
 
@@ -21,4 +22,17 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
     return products;
   }
+  Future<List<Products>> getProductDetailes(int id  ) async{
+    var data =await _api.getProductDetailes(id);
+    List productData=data['product'];
+
+
+    for(var elemnt in productData)
+      productDetailes.add(Products.fromJson(elemnt));
+
+print(productDetailes);
+    notifyListeners();
+    return productDetailes;
+  }
+
 }

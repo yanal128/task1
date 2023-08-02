@@ -19,8 +19,12 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home:  Home(),
-    );
+      home: WillPopScope(
+      onWillPop: () async {
+    // Return true to prevent back navigation
+    return false;
+    }, child: Home(),
+    ));
   }
 }
 

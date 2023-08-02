@@ -1,5 +1,4 @@
 import 'package:aumettask_1/screen/homepage/detailspage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -16,7 +15,8 @@ class Home extends ConsumerStatefulWidget{
 class _HomeState extends ConsumerState<Home> {
   final PagingController<int, Products> _productsListPaginationController =
   PagingController(firstPageKey: 0);
- int _offset=0;
+ int offset=0;
+ int limit=5;
   @override
   void initState() {
     super.initState();
@@ -25,15 +25,16 @@ class _HomeState extends ConsumerState<Home> {
     });
   }
   Future<void> _fetchData() async {
-    List<Products> products = await ref.read(productProvider).getProducts();
-    _offset += products.length;
-    _productsListPaginationController.appendPage(products, _offset);
+    List<Products> products = await ref.read(productProvider).getProducts(offset, limit );
+    offset += products.length;
+    _productsListPaginationController.appendPage(products, offset);
   }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Image.asset("image/logo.png"),
         centerTitle: true,
       ),
@@ -43,17 +44,25 @@ class _HomeState extends ConsumerState<Home> {
           pagingController: _productsListPaginationController,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 8,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            childAspectRatio: 0.9,
+
           ),
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, products, index) => InkWell(
-              onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (builder)=>DetailesPage(Products as Products)));
+              onTap: () {
+
+                  Navigator.push(context, MaterialPageRoute(builder: (builder)=>DetailesPage(
+                    products.name,products.price,
+                    products.photoUrl,products.createdAt,
+                    products.description,products.category,
+                    products.updatedAt,
+                  )));
               },
               child: Container(
                 width: 162,
-                height: 308,
+                // height: 400,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -64,22 +73,33 @@ class _HomeState extends ConsumerState<Home> {
                 ),
                 child: Column(
                   children: [
-                    Text(products.name!),
-                    Image.network(
-                      products.photoUrl!,
-                      width: 94,
-                      height: 82,
+                    Text(products.name!,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 20),),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(
+                        products.photoUrl!,
+                        width: 70,
+                        height: 60,
+                      ),
                     ),
-                    Expanded(child: Text(products.description!,style: TextStyle(),textAlign: TextAlign.center,)),
+                    Expanded(child: Text(products.description!,textAlign: TextAlign.center,)),
                     Container(
-                      width: 130,
+                      margin: EdgeInsets.only(left: 10,right: 10,top:0,bottom: 5),
+                      width: 140,
                       height: 30,
                       decoration: BoxDecoration(
-                        color: Colors.lightBlueAccent,
-                        borderRadius: BorderRadius.circular(15)
+                        color: Colors.cyan[200],
+                        borderRadius: BorderRadius.circular(10)
                       ),
                       child: MaterialButton(
-                          onPressed: () {}, child: const Text("See More")),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (builder)=>DetailesPage(
+                              products.name,products.price,
+                              products.photoUrl,products.createdAt,
+                              products.description,products.category,
+                              products.updatedAt,
+                            )));
+                          }, child: const Text("See More",style: TextStyle(color: Colors.white),)),
                     )
                   ],
                 ),
