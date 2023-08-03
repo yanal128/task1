@@ -1,9 +1,11 @@
 import 'package:aumettask_1/screen/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-void main() {
-
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+void main() async{
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await Future.delayed(const Duration(seconds: 5));
+  FlutterNativeSplash.remove();
   runApp(const ProviderScope(child: MyApp()),);
 }
 

@@ -40,7 +40,13 @@ dependencies:
   flutter_riverpod: ^2.3.6
   riverpod: ^2.3.6
   flutter_native_splash: ^2.2.19
-
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: '#FFFFFF'
+  image : "image/logo.png"
+  hieght: 100
 dev_dependencies:
   flutter_test:
     sdk: flutter
